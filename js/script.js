@@ -1,43 +1,37 @@
 const characterList = document.getElementById('character-list');
-const paginaAdelante = document.getElementById('next-page');
-const paginaAtras = document.getElementById('prev-page');
+const nextPage = document.getElementById('next-page');
+const previousPage = document.getElementById('prev-page');
 
-fetch('https://rickandmortyapi.com/api/character?page=4')
-    .then((response) => response.json())
-    .then((data) => {
-        console.log(data)
-        const characters = data.results;
-        characterList.innerHTML = createCharacterListHTML(characters);
-    })
-    .catch(error => {
-        characterList.innerHTML = `Error al obtener personajes`;
-    });
+let currentPage = 1;
 
-paginaAdelante.addEventListener('click', () => {
-    fetch('https://rickandmortyapi.com/api/character?page=3')
-     .then((response) => response.json())
-     .then((data) => {
-         // console.log('esto funciona');
-         const characters2 = data.results;
-         characterList.innerHTML = createCharacterListHTML(characters2);
-     })
-     .catch(error => {
-         characterList.innerHTML = 'Error al obtener personajes';
-         });
-})
+function fetchPersonajes(page) {
+    fetch(`https://rickandmortyapi.com/api/character?page=${page}`)
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data)
+            const characters = data.results;
+            characterList.innerHTML = createCharacterListHTML(characters);
+        })
+        .catch(error => {
+            characterList.innerHTML = `Error al obtener personajes`;
+        });
+}
+nextPage.addEventListener('click', () => {
+   currentPage++;
+   fetchCharacters(currentPage);
+   console.log('Este boton va hacia adelante')
+});
 
-paginaAtras.addEventListener('click', () => {
-    fetch('https://rickandmortyapi.com/api/character?page=1')
-.then((response) => response.json())
-.then((data) => {
-     console.log(data);
-    const characters3 = data.results;
-    characterList.innerHTML = createCharacterListHTML(characters3);
-})
-.catch(error => {
-    characterList.innerHTML = 'Error al obtener personajes';
-    });
-})
+previousPage.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        fetchCharacters(currentPage);
+        console.log('Este botón va hacia atras')
+    }
+});
+
+fetchPersonajes(currentPage);
+
  function createCharacterListHTML(character) {
         let lista = "<ul>";
         character.forEach(character => {
